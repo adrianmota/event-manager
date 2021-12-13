@@ -5,7 +5,7 @@ CREATE TABLE evento
 (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(60) NOT NULL,
-    fecha CHAR(10),
+    fecha CHAR(10) NOT NULL,
     horaInicio CHAR(10) NOT NULL,
     horaFinal CHAR(10) NOT NULL,
     lugar VARCHAR(60) NOT NULL,
