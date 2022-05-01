@@ -15,5 +15,3 @@ CREATE TABLE event
 -- First record
 INSERT INTO event(name, date, startTime, endTime, place, quote)
 VALUES('Calculus class', '21/08/2020', '8:00 PM', '10:00 PM', 'Google Meet', 'The class is about derivatives');
-
-SELECT * FROM event;

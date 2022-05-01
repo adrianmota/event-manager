@@ -1,16 +1,17 @@
 package com.forms;
 
 import com.entities.Event;
-import com.services.EventoService;
+import com.services.EventService;
+import javax.swing.JLabel;
 
-public class VentanaModificar extends javax.swing.JFrame {
+public class EditEventWindow extends javax.swing.JFrame {
 
-    EventoService eventoService;
+    EventService eventServiceObj;
 
-    public VentanaModificar() {
+    public EditEventWindow() {
         initComponents();
         setLocationRelativeTo(null);
-        this.eventoService = new EventoService();
+        this.eventServiceObj = new EventService();
     }
 
     @SuppressWarnings("unchecked")
@@ -26,12 +27,12 @@ public class VentanaModificar extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        txtfNombreEvento = new javax.swing.JTextField();
-        txtfLugarEvento = new javax.swing.JTextField();
-        txtfHoraInicio = new javax.swing.JTextField();
-        txtfHoraFinal = new javax.swing.JTextField();
-        txtfFecha = new javax.swing.JTextField();
-        txtfNotaEvento = new javax.swing.JTextField();
+        txtfEventName = new javax.swing.JTextField();
+        txtfEventPlace = new javax.swing.JTextField();
+        txtfStartTime = new javax.swing.JTextField();
+        txtfEndTime = new javax.swing.JTextField();
+        txtfEventDate = new javax.swing.JTextField();
+        txtfEventQuote = new javax.swing.JTextField();
         btnModificar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
         btnVolver = new javax.swing.JButton();
@@ -84,12 +85,12 @@ public class VentanaModificar extends javax.swing.JFrame {
         jLabel8.setForeground(new java.awt.Color(255, 255, 255));
         jLabel8.setText("Descripcion del Evento");
         getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(203, 252, 144, 29));
-        getContentPane().add(txtfNombreEvento, new org.netbeans.lib.awtextra.AbsoluteConstraints(252, 117, 180, 27));
-        getContentPane().add(txtfLugarEvento, new org.netbeans.lib.awtextra.AbsoluteConstraints(486, 117, 162, 27));
-        getContentPane().add(txtfHoraInicio, new org.netbeans.lib.awtextra.AbsoluteConstraints(203, 199, 84, 27));
-        getContentPane().add(txtfHoraFinal, new org.netbeans.lib.awtextra.AbsoluteConstraints(324, 199, 75, 27));
-        getContentPane().add(txtfFecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(464, 199, 78, 27));
-        getContentPane().add(txtfNotaEvento, new org.netbeans.lib.awtextra.AbsoluteConstraints(203, 288, 293, 30));
+        getContentPane().add(txtfEventName, new org.netbeans.lib.awtextra.AbsoluteConstraints(252, 117, 180, 27));
+        getContentPane().add(txtfEventPlace, new org.netbeans.lib.awtextra.AbsoluteConstraints(486, 117, 162, 27));
+        getContentPane().add(txtfStartTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(203, 199, 84, 27));
+        getContentPane().add(txtfEndTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(324, 199, 75, 27));
+        getContentPane().add(txtfEventDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(464, 199, 78, 27));
+        getContentPane().add(txtfEventQuote, new org.netbeans.lib.awtextra.AbsoluteConstraints(203, 288, 293, 30));
 
         btnModificar.setText("Modificar");
         btnModificar.addActionListener(new java.awt.event.ActionListener() {
@@ -147,90 +148,80 @@ public class VentanaModificar extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void validarYModificarEvento(String nombreEvento, String fechaEvento, String horaInicio, String horaFinal, String lugarEvento, String notaEvento) {
-        if (!nombreEvento.equals("") && !fechaEvento.equals("") && !horaInicio.equals("") && !horaFinal.equals("") && !lugarEvento.equals("") && !notaEvento.equals("")) {
-            boolean fechaEsCorrecta = this.eventoService.verificarFecha(fechaEvento);
-            if (fechaEsCorrecta) {
-                Event evento = this.crearObjEvento();
-                this.eventoService.modificarEvento(evento);
-                this.limpiarCampos();
-                this.setVisible(false);
-            } else {
-                this.jlblMensajeAlUsuario.setText("Introduciste la fecha de manera incorrecta");
-            }
-        } else {
-            this.jlblMensajeAlUsuario.setText("Debes rellenar los campos requeridos");
-        }
-    }
-
-    private Event crearObjEvento() {
+    public Event getDataFromForm() {
         Event evento = new Event(Integer.parseInt(this.jlblTextId.getText()),
-                this.txtfNombreEvento.getText(),
-                this.txtfFecha.getText(),
-                this.txtfHoraInicio.getText(),
-                this.txtfHoraFinal.getText(),
-                this.txtfLugarEvento.getText(),
-                this.txtfNotaEvento.getText()
-        );
+                                 this.txtfEventName.getText(),
+                                 this.txtfEventDate.getText(),
+                                 this.txtfStartTime.getText(),
+                                 this.txtfEndTime.getText(),
+                                 this.txtfEventPlace.getText(),
+                                 this.txtfEventQuote.getText()
+                                 );
         return evento;
     }
 
-    private void limpiarCampos() {
+    public void cleanFields() {
         this.jlblTextId.setText("");
-        this.txtfNombreEvento.setText("");
-        this.txtfHoraInicio.setText("");
-        this.txtfHoraFinal.setText("");
-        this.txtfLugarEvento.setText("");
-        this.txtfNotaEvento.setText("");
-        this.txtfFecha.setText("");
+        this.txtfEventName.setText("");
+        this.txtfStartTime.setText("");
+        this.txtfEndTime.setText("");
+        this.txtfEventPlace.setText("");
+        this.txtfEventQuote.setText("");
+        this.txtfEventDate.setText("");
+    }
+
+    public JLabel getJlblMensajeAlUsuario() {
+        return this.jlblMensajeAlUsuario;
     }
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
         this.jlblMensajeAlUsuario.setText("");
-        String nombreEvento = this.txtfNombreEvento.getText();
-        String fechaEvento = this.txtfFecha.getText();
-        String horaInicio = this.txtfHoraInicio.getText();
-        String horaFinal = this.txtfHoraFinal.getText();
-        String lugarEvento = this.txtfLugarEvento.getText();
-        String notaEvento = this.txtfNotaEvento.getText();
-        this.validarYModificarEvento(nombreEvento, fechaEvento, horaInicio, horaFinal, lugarEvento, notaEvento);
-        VentanaInicio.vtnInicio.mostrarDatosTabla();
+        String name = this.txtfEventName.getText();
+        String date = this.txtfEventDate.getText();
+        String startTime = this.txtfStartTime.getText();
+        String endTime = this.txtfEndTime.getText();
+        String place = this.txtfEventPlace.getText();
+        String quote = this.txtfEventQuote.getText();
+        eventServiceObj.validateAndEditEvent(this, name, date, startTime, endTime, place, quote);
+        MainWindow.getInstance().showDataInTable();
     }//GEN-LAST:event_btnModificarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         this.setVisible(false);
         this.jlblMensajeAlUsuario.setText("");
-        this.limpiarCampos();
+        this.cleanFields();
+        MainWindow.getInstance().setVisible(true);
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         this.setVisible(false);
         this.jlblMensajeAlUsuario.setText("");
-        this.limpiarCampos();
+        this.cleanFields();
+        MainWindow.getInstance().setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
 
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new VentanaModificar().setVisible(true);
+                new EditEventWindow().setVisible(true);
             }
         });
     }
 
     public void setTextOfTxtfNombreEvento(String textNombreEvento) {
-        this.txtfNombreEvento.setText(textNombreEvento);
+        this.txtfEventName.setText(textNombreEvento);
     }
 
     public void setTextOfTxtfFecha(String textFecha) {
-        this.txtfFecha.setText(textFecha);
+        this.txtfEventDate.setText(textFecha);
     }
 
     public void setTextOfTxtfHoraFinal(String textHoraFinal) {
-        this.txtfHoraFinal.setText(textHoraFinal);
+        this.txtfEndTime.setText(textHoraFinal);
     }
 
     public void setTextOfTxtfHoraInicio(String textHoraInicio) {
-        this.txtfHoraInicio.setText(textHoraInicio);
+        this.txtfStartTime.setText(textHoraInicio);
     }
 
     public void setTextOfTxtId(String textId) {
@@ -238,11 +229,11 @@ public class VentanaModificar extends javax.swing.JFrame {
     }
 
     public void setTextOfTxtfLugarEvento(String textLugarEvento) {
-        this.txtfLugarEvento.setText(textLugarEvento);
+        this.txtfEventPlace.setText(textLugarEvento);
     }
 
     public void setTextOfTxtfNotaEvento(String textNotaEvento) {
-        this.txtfNotaEvento.setText(textNotaEvento);
+        this.txtfEventQuote.setText(textNotaEvento);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -262,11 +253,11 @@ public class VentanaModificar extends javax.swing.JFrame {
     private javax.swing.JLabel jlblIdLabel;
     private javax.swing.JLabel jlblMensajeAlUsuario;
     private javax.swing.JLabel jlblTextId;
-    private javax.swing.JTextField txtfFecha;
-    private javax.swing.JTextField txtfHoraFinal;
-    private javax.swing.JTextField txtfHoraInicio;
-    private javax.swing.JTextField txtfLugarEvento;
-    private javax.swing.JTextField txtfNombreEvento;
-    private javax.swing.JTextField txtfNotaEvento;
+    private javax.swing.JTextField txtfEndTime;
+    private javax.swing.JTextField txtfEventDate;
+    private javax.swing.JTextField txtfEventName;
+    private javax.swing.JTextField txtfEventPlace;
+    private javax.swing.JTextField txtfEventQuote;
+    private javax.swing.JTextField txtfStartTime;
     // End of variables declaration//GEN-END:variables
 }

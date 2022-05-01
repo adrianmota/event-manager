@@ -1,10 +1,10 @@
 package main;
 
-import com.forms.VentanaInicio;
+import com.forms.MainWindow;
 
 public class Program {
     public static void main(String args[]) {
-        VentanaInicio vtnInicio = new VentanaInicio();
-        vtnInicio.setVisible(true);
+        MainWindow mainWindow = MainWindow.getInstance();
+        mainWindow.setVisible(true);
     }
 }

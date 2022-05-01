@@ -3,25 +3,32 @@ package com.forms;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JTable;
 import java.util.List;
-import com.services.EventoService;
 import com.entities.Event;
+import com.services.EventService;
 
-public class VentanaInicio extends javax.swing.JFrame {
+public class MainWindow extends javax.swing.JFrame {
 
-    static VentanaInicio vtnInicio;
-    VentanaCrearEventos vtnCrearEvento = new VentanaCrearEventos();
-    VentanaModificar vtnModificarEvento = new VentanaModificar();
-    EventoService eventoService = new EventoService();
+    private static MainWindow windowItself;
+    CreateEventWindow createEventWindow = new CreateEventWindow();
+    EditEventWindow editEventWindow = new EditEventWindow();
     DefaultTableModel tableModel;
-    List<Event> eventos;
-    String idRegistroEvento;
+    EventService eventServiceObj = new EventService();
+    List<Event> events;
+    String eventRecordId;
 
-    public VentanaInicio() {
+    private MainWindow() {
         initComponents();
         setLocationRelativeTo(null);
-        this.definirTablaEventos();
-        this.mostrarDatosTabla();
-        this.registrarVentana(this);
+        this.showDataInTable();
+    }
+    
+    public static MainWindow getInstance() {
+        if (windowItself == null) {
+            windowItself = new MainWindow();
+            return windowItself;
+        }
+        
+        return windowItself;
     }
 
     @SuppressWarnings("unchecked")
@@ -151,58 +158,55 @@ public class VentanaInicio extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public void mostrarDatosTabla() {
-        this.eventos = eventoService.obtenerEventos();
-        this.definirTablaEventos();
-        this.rellenarTablaEventos(eventos);
+    public void showDataInTable() {
+        this.events = eventServiceObj.listEvents();
+        this.defineEventsTable();
+        this.fillEventsTable(events);
     }
 
-    private void rellenarCamposVtnModificarEvento(String[] valoresEvento) {
-        this.vtnModificarEvento.setTextOfTxtId(valoresEvento[0]);
-        this.vtnModificarEvento.setTextOfTxtfNombreEvento(valoresEvento[1]);
-        this.vtnModificarEvento.setTextOfTxtfFecha(valoresEvento[2]);
-        this.vtnModificarEvento.setTextOfTxtfHoraInicio(valoresEvento[3]);
-        this.vtnModificarEvento.setTextOfTxtfHoraFinal(valoresEvento[4]);
-        this.vtnModificarEvento.setTextOfTxtfLugarEvento(valoresEvento[5]);
-        this.vtnModificarEvento.setTextOfTxtfNotaEvento(valoresEvento[6]);
+    private void fillFieldsOfEditEventWindow(String[] valoresEvento) {
+        this.editEventWindow.setTextOfTxtId(valoresEvento[0]);
+        this.editEventWindow.setTextOfTxtfNombreEvento(valoresEvento[1]);
+        this.editEventWindow.setTextOfTxtfFecha(valoresEvento[2]);
+        this.editEventWindow.setTextOfTxtfHoraInicio(valoresEvento[3]);
+        this.editEventWindow.setTextOfTxtfHoraFinal(valoresEvento[4]);
+        this.editEventWindow.setTextOfTxtfLugarEvento(valoresEvento[5]);
+        this.editEventWindow.setTextOfTxtfNotaEvento(valoresEvento[6]);
     }
 
-    private void definirTablaEventos() {
+    private void defineEventsTable() {
         String[] titles = {"id", "Nombre", "fecha", "Hora inicio", "Hora despedida", "Lugar", "Nota"};
         this.tableModel = new DefaultTableModel(null, titles);
         this.tablaEventos.setModel(this.tableModel);
     }
 
-    private void rellenarTablaEventos(List<Event> eventos) {
+    private void fillEventsTable(List<Event> eventos) {
         for (Event evento : eventos) {
             String[] objEvento = {String.valueOf(evento.getId()), evento.getName(), evento.getDate(), evento.getStartTime(), evento.getEndTime(), evento.getPlace(), evento.getQuote()};
             this.tableModel.addRow(objEvento);
         }
     }
 
-    private void registrarVentana(VentanaInicio ventana) {
-        vtnInicio = ventana;
-    }
-
-    private void validarYRealizarBusqueda() {
-        String dato = txtBuscador.getText();
+    private void validateAndSearchEvent() {
+        String data = txtBuscador.getText();
         this.txtBuscador.setText("");
         this.jlblTxtNoEventos.setText("");
-        this.eventos = this.eventoService.buscarEventos(dato);
-        if (this.eventos != null) {
-            if (!this.eventos.isEmpty()) {
-                this.definirTablaEventos();
-                this.rellenarTablaEventos(eventos);
+        this.events = eventServiceObj.searchEvents(data);
+        
+        if (this.events != null) {
+            if (!this.events.isEmpty()) {
+                this.defineEventsTable();
+                this.fillEventsTable(events);
             } else {
-                this.definirTablaEventos();
-                this.rellenarTablaEventos(eventos);
+                this.defineEventsTable();
+                this.fillEventsTable(events);
                 this.jlblTxtNoEventos.setText("No se encontraron registros");
             }
         }
     }
 
     private void btnMostrarEventosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarEventosActionPerformed
-        this.mostrarDatosTabla();
+        this.showDataInTable();
         this.jlblTxtNoEventos.setText("");
     }//GEN-LAST:event_btnMostrarEventosActionPerformed
 
@@ -213,9 +217,9 @@ public class VentanaInicio extends javax.swing.JFrame {
             for (int indiceValor = 0; indiceValor < valoresEvento.length; indiceValor++) {
                 valoresEvento[indiceValor] = registroEvento.getModel().getValueAt(registroEvento.getSelectedRow(), indiceValor).toString();
             }
-            this.rellenarCamposVtnModificarEvento(valoresEvento);
+            this.fillFieldsOfEditEventWindow(valoresEvento);
         }
-        this.idRegistroEvento = valoresEvento[0];
+        this.eventRecordId = valoresEvento[0];
     }//GEN-LAST:event_tablaEventosMouseClicked
 
     private void txtBuscadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscadorActionPerformed
@@ -223,20 +227,22 @@ public class VentanaInicio extends javax.swing.JFrame {
     }//GEN-LAST:event_txtBuscadorActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        this.validarYRealizarBusqueda();
+        this.validateAndSearchEvent();
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearActionPerformed
-        this.vtnCrearEvento.setVisible(true);
+        this.createEventWindow.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_btnCrearActionPerformed
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-        this.vtnModificarEvento.setVisible(true);
+        this.editEventWindow.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_btnModificarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        this.eventoService.eliminarEvento(this.idRegistroEvento);
-        this.mostrarDatosTabla();
+        eventServiceObj.deleteEvent(this.eventRecordId);
+        this.showDataInTable();
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void button2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button2ActionPerformed

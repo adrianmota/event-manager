@@ -4,9 +4,9 @@ import java.sql.*;
 
 public class Connector {
 
-    private final String url = "jdbc:mysql://localhost/proyecto_final_prog1";
+    private final String url = "jdbc:mysql://localhost/event_manager";
     private final String user = "root";
-    private final String password = "";
+    private final String password = "426080ams";
     public Connection connection;
 
     public Connection connect() {
