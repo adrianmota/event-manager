@@ -1,19 +1,19 @@
-package com.formularios;
+package com.forms;
 
 import javax.swing.table.DefaultTableModel;
-import java.util.List;
 import javax.swing.JTable;
+import java.util.List;
 import com.services.EventoService;
-import com.entidades.Evento;
+import com.entities.Event;
 
 public class VentanaInicio extends javax.swing.JFrame {
 
+    static VentanaInicio vtnInicio;
     VentanaCrearEventos vtnCrearEvento = new VentanaCrearEventos();
     VentanaModificar vtnModificarEvento = new VentanaModificar();
     EventoService eventoService = new EventoService();
-    static VentanaInicio vtnInicio;
     DefaultTableModel tableModel;
-    List<Evento> eventos;
+    List<Event> eventos;
     String idRegistroEvento;
 
     public VentanaInicio() {
@@ -173,9 +173,9 @@ public class VentanaInicio extends javax.swing.JFrame {
         this.tablaEventos.setModel(this.tableModel);
     }
 
-    private void rellenarTablaEventos(List<Evento> eventos) {
-        for (Evento evento : eventos) {
-            String[] objEvento = {String.valueOf(evento.getId()), evento.getNombre(), evento.getFecha(), evento.getHoraInicio(), evento.getHoraFinal(), evento.getLugar(), evento.getNota()};
+    private void rellenarTablaEventos(List<Event> eventos) {
+        for (Event evento : eventos) {
+            String[] objEvento = {String.valueOf(evento.getId()), evento.getName(), evento.getDate(), evento.getStartTime(), evento.getEndTime(), evento.getPlace(), evento.getQuote()};
             this.tableModel.addRow(objEvento);
         }
     }

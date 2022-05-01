@@ -1,6 +1,6 @@
-package com.formularios;
+package com.forms;
 
-import com.entidades.Evento;
+import com.entities.Event;
 import com.services.EventoService;
 
 public class VentanaModificar extends javax.swing.JFrame {
@@ -151,7 +151,7 @@ public class VentanaModificar extends javax.swing.JFrame {
         if (!nombreEvento.equals("") && !fechaEvento.equals("") && !horaInicio.equals("") && !horaFinal.equals("") && !lugarEvento.equals("") && !notaEvento.equals("")) {
             boolean fechaEsCorrecta = this.eventoService.verificarFecha(fechaEvento);
             if (fechaEsCorrecta) {
-                Evento evento = this.crearObjEvento();
+                Event evento = this.crearObjEvento();
                 this.eventoService.modificarEvento(evento);
                 this.limpiarCampos();
                 this.setVisible(false);
@@ -163,8 +163,8 @@ public class VentanaModificar extends javax.swing.JFrame {
         }
     }
 
-    private Evento crearObjEvento() {
-        Evento evento = new Evento(Integer.parseInt(this.jlblTextId.getText()),
+    private Event crearObjEvento() {
+        Event evento = new Event(Integer.parseInt(this.jlblTextId.getText()),
                 this.txtfNombreEvento.getText(),
                 this.txtfFecha.getText(),
                 this.txtfHoraInicio.getText(),

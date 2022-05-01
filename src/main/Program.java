@@ -1,8 +1,8 @@
 package main;
 
-import com.formularios.VentanaInicio;
+import com.forms.VentanaInicio;
 
-public class Sistema {
+public class Program {
     public static void main(String args[]) {
         VentanaInicio vtnInicio = new VentanaInicio();
         vtnInicio.setVisible(true);

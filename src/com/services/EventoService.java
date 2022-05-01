@@ -2,93 +2,89 @@ package com.services;
 
 import java.sql.*;
 import java.util.List;
-import com.entidades.Evento;
 import java.util.ArrayList;
-import com.mysql.db.DatabaseConnection;
+import com.entities.Event;
+import com.data.mysql.Connector;
 
 public class EventoService {
 
-    private final DatabaseConnection dbConnection;
+    private final Connector connector;
     private PreparedStatement preparedStatement;
     private ResultSet resultSet;
 
     public EventoService() {
-        dbConnection = new DatabaseConnection();
+        connector = new Connector();
     }
 
-    //Metodo para agregar los datos del evento a la base de datos
-    public void agregarEvento(Evento evento) {
-        this.dbConnection.connect();
-        String mysql_instruction = "INSERT INTO evento(nombre, fecha, horaInicio, horaFinal, lugar, nota) "
-                + "VALUES(?, ?, ?, ?, ?, ?)";
+    public void agregarEvento(Event evento) {
+        Connection connection = this.connector.connect();
+        String sql_instruction = "INSERT INTO evento(nombre, fecha, horaInicio, horaFinal, lugar, nota) " +
+                                   "VALUES(?, ?, ?, ?, ?, ?)";
         try {
-            this.preparedStatement = this.dbConnection.connection.prepareStatement(mysql_instruction);
-            this.preparedStatement.setString(1, evento.getNombre());
-            this.preparedStatement.setString(2, evento.getFecha());
-            this.preparedStatement.setString(3, evento.getHoraInicio());
-            this.preparedStatement.setString(4, evento.getHoraFinal());
-            this.preparedStatement.setString(5, evento.getLugar());
-            this.preparedStatement.setString(6, evento.getNota());
+            this.preparedStatement = connection.prepareStatement(sql_instruction);
+            this.preparedStatement.setString(1, evento.getName());
+            this.preparedStatement.setString(2, evento.getDate());
+            this.preparedStatement.setString(3, evento.getStartTime());
+            this.preparedStatement.setString(4, evento.getEndTime());
+            this.preparedStatement.setString(5, evento.getPlace());
+            this.preparedStatement.setString(6, evento.getQuote());
             this.preparedStatement.executeUpdate();
             System.out.println("Evento agregado");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            this.dbConnection.disconnect();
+            this.connector.disconnect();
         }
     }
 
-    //Metodo para eliminar los datos del evento de la base de datos
     public void eliminarEvento(String idEvento) {
-        this.dbConnection.connect();
-        String mysql_instruction = "DELETE FROM evento "
-                + "WHERE id = " + idEvento;
+        Connection connection = this.connector.connect();
+        String sql_instruction = "DELETE FROM evento " +
+                                   "WHERE id = " + idEvento;
         try {
-            this.preparedStatement = this.dbConnection.connection.prepareStatement(mysql_instruction);
+            this.preparedStatement = connection.prepareStatement(sql_instruction);
             this.preparedStatement.executeUpdate();
             System.out.println("Evento eliminado");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            this.dbConnection.disconnect();
+            this.connector.disconnect();
         }
 
     }
 
-    //Metodo para modificar los datos del evento en la base de datos
-    public void modificarEvento(Evento evento) {
-        this.dbConnection.connect();
-        String mysql_instruction = "UPDATE evento SET nombre = '" + evento.getNombre() + "', "
-                + "fecha = '" + evento.getFecha() + "', "
-                + "horaInicio = '" + evento.getHoraInicio() + "', "
-                + "horaFinal = '" + evento.getHoraFinal() + "', "
-                + "lugar = '" + evento.getLugar() + "', "
-                + "nota = '" + evento.getNota() + "' "
+    public void modificarEvento(Event evento) {
+        Connection connection = this.connector.connect();
+        String sql_instruction = "UPDATE evento SET nombre = '" + evento.getName() + "', "
+                + "fecha = '" + evento.getDate() + "', "
+                + "horaInicio = '" + evento.getStartTime() + "', "
+                + "horaFinal = '" + evento.getEndTime() + "', "
+                + "lugar = '" + evento.getPlace() + "', "
+                + "nota = '" + evento.getQuote() + "' "
                 + "WHERE id = " + evento.getId();
         try {
-            this.preparedStatement = this.dbConnection.connection.prepareStatement(mysql_instruction);
+            this.preparedStatement = this.connector.connection.prepareStatement(sql_instruction);
             this.preparedStatement.executeUpdate();
             System.out.println("Evento modificado");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            this.dbConnection.disconnect();
+            this.connector.disconnect();
         }
     }
 
-    //Metodo para obtener todos los eventos desde la base de datos
-    public List<Evento> obtenerEventos() {
-        this.dbConnection.connect();
-        List<Evento> eventos = new ArrayList<>();
-        Evento evento = null;
-        String mysql_query = "SELECT id, nombre, fecha, horaInicio, horaFinal, lugar, nota "
-                + "FROM evento";
+    public List<Event> obtenerEventos() {
+        this.connector.connect();
+        List<Event> eventos = new ArrayList<>();
+        Event evento = null;
+        String sql_query = "SELECT id, nombre, fecha, horaInicio, horaFinal, lugar, nota " +
+                           "FROM evento";
         try {
-            this.preparedStatement = this.dbConnection.connection.prepareStatement(mysql_query);
+            this.preparedStatement = this.connector.connection.prepareStatement(sql_query);
             this.resultSet = this.preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                evento = new Evento(this.resultSet.getInt("id"),
+                evento = new Event(this.resultSet.getInt("id"),
                         this.resultSet.getString("nombre"),
                         this.resultSet.getString("fecha"),
                         this.resultSet.getString("horaInicio"),
@@ -101,29 +97,28 @@ public class EventoService {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            this.dbConnection.disconnect();
+            this.connector.disconnect();
         }
         return eventos;
     }
 
-    //Metodo para buscar los eventos segun el dato que se pase
-    public List<Evento> buscarEventos(String dato) {
+    public List<Event> buscarEventos(String dato) {
         String[] campos = {"nombre", "fecha", "nota"};
-        List<Evento> eventos = null;
-        Evento evento = null;
+        List<Event> eventos = null;
+        Event evento = null;
         if (!dato.equals("")) {
-            this.dbConnection.connect();
+            this.connector.connect();
             eventos = new ArrayList<>();
             for (String campo : campos) {
-                String mysql_query = "SELECT id, nombre, fecha, horaInicio, horaFinal, lugar, nota "
+                String sql_query = "SELECT id, nombre, fecha, horaInicio, horaFinal, lugar, nota "
                         + "FROM evento "
                         + "WHERE " + campo + " LIKE " + "'%" + dato + "%'";
                 try {
-                    this.preparedStatement = this.dbConnection.connection.prepareStatement(mysql_query);
+                    this.preparedStatement = this.connector.connection.prepareStatement(sql_query);
                     this.resultSet = preparedStatement.executeQuery();
                     boolean mismoRegistro = false;
                     while (resultSet.next()) {
-                        evento = new Evento(this.resultSet.getInt("id"),
+                        evento = new Event(this.resultSet.getInt("id"),
                                 this.resultSet.getString("nombre"),
                                 this.resultSet.getString("fecha"),
                                 this.resultSet.getString("horaInicio"),
@@ -133,7 +128,7 @@ public class EventoService {
                         if (eventos.isEmpty()) {
                             eventos.add(evento);
                         } else {
-                            for (Evento eventoAgregado : eventos) {
+                            for (Event eventoAgregado : eventos) {
                                 if (eventoAgregado.equals(evento)) {
                                     mismoRegistro = true;
                                     break;
@@ -149,7 +144,7 @@ public class EventoService {
                 }
             }
         }
-        this.dbConnection.disconnect();
+        this.connector.disconnect();
         return eventos;
     }
 

@@ -1,7 +1,7 @@
-package com.formularios;
+package com.forms;
 
 import com.services.EventoService;
-import com.entidades.Evento;
+import com.entities.Event;
 
 public class VentanaCrearEventos extends javax.swing.JFrame {
 
@@ -142,7 +142,7 @@ public class VentanaCrearEventos extends javax.swing.JFrame {
         if (!nombreEvento.equals("") && !fechaEvento.equals("") && !horaInicio.equals("") && !horaFinal.equals("") && !lugarEvento.equals("") && !notaEvento.equals("")) {
             boolean fechaEsCorrecta = eventoService.verificarFecha(fechaEvento);
             if (fechaEsCorrecta) {
-                Evento evento = this.crearObjEvento();
+                Event evento = this.crearObjEvento();
                 this.eventoService.agregarEvento(evento);
                 this.limpiarCampos();
                 this.jlblMensajeAlUsuario.setText("Se ha registrado el evento exitosamente");
@@ -154,8 +154,8 @@ public class VentanaCrearEventos extends javax.swing.JFrame {
         }
     }
 
-    private Evento crearObjEvento() {
-        Evento evento = new Evento(this.txtfNombreEvento.getText(),
+    private Event crearObjEvento() {
+        Event evento = new Event(this.txtfNombreEvento.getText(),
                 this.txtfFecha.getText(),
                 this.txtfHoraInicio.getText(),
                 this.txtfHoraFinal.getText(),
