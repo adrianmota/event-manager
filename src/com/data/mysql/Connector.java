@@ -12,11 +12,12 @@ public class Connector {
     public Connection connect() {
         try {
             this.connection = DriverManager.getConnection(this.url, this.user, this.password);
+            return this.connection;
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            return this.connection;
-        }
+        } 
+        
+        return this.connection;
     }
 
     public void disconnect() {
